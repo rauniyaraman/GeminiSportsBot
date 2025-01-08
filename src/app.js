@@ -59,18 +59,20 @@ app.post("/api/query", async (req, res) => {
           });
         }
 
-        const followUp = await chat.sendMessage([
-          {
-            functionResponse: {
-              name: aiSelfCall.name,
-              response: { message: functionResult.response }, // Wrap in an object
-            },
+      const followUp = await chat.sendMessage([
+        {
+          functionResponse: {
+            name: aiSelfCall.name,
+            response: { formattedMatches: functionResult.response }, // Maintain exact format
           },
-        ]);
+        },
+      ]);
 
-        const finalResponse = followUp.response.text();
-        chatHistory.push({ role: "assistant", text: finalResponse });
-        return res.json({ response: finalResponse });
+      const finalResponse = followUp.response.text();
+      chatHistory.push({ role: "assistant", text: finalResponse });
+      return res.json({ response: finalResponse });
+
+        
       } else {
         console.error("Unsupported function call:", aiSelfCall.name);
         return res.status(400).json({ error: "Unsupported function call." });

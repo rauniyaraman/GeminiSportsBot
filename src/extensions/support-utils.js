@@ -21,18 +21,26 @@ export const questionSports = {
       return { error: matches.error };
     }
 
-    // Combine match data into a single summary string
-    const summary = matches.response
+    // Format the live matches into a readable structure
+    const formattedMatches = matches.response
       .map(
-        (match) =>
-          `The match between ${match.home} and ${match.away} is at ${match.time}, with a score of ${match.score}.`
+        (match, index) => `
+${index + 1}. **${match.home} vs ${match.away}**
+   - **Score**: ${match.score}
+   - **Time**: ${match.time.includes('Half') ? match.time : `${match.time}`}
+`
       )
-      .join(" ");
+      .join("\n");
 
-    return { response: summary };
+    const response = `
+### Live Football Matches
+${formattedMatches}
+---
+
+These scores and times are approximate and subject to change as the matches progress.
+    `;
+    return { response };
   },
 };
-
-
 
 
